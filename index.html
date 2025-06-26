@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KEI SHIN KAN JAWA BARAT</title>
+    <!-- Link ke Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Konfigurasi Tailwind untuk menambahkan warna dan font kustom jika diperlukan -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'], // Inter font
+                    },
+                    colors: {
+                        primary: '#B40000', // Primary color for the club (red)
+                        secondary: '#333333', // Secondary color for text (dark)
+                        accent: '#F9A826', // Accent color (yellow)
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Link ke Font Awesome untuk ikon hamburger -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0V4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Favicon (Logo di tab browser) -->
+    <link rel="icon" href="img/logo-ksk.png" type="image/png">
+    <style>
+        /* Enable smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+            font-family: 'Inter', sans-serif; /* Use Inter font by default */
+        }
+        /* Set hero section height to viewport height */
+        .hero-section {
+            min-height: 100vh; /* At least viewport height */
+            display: flex;
+            align-items: center; /* Vertically center content */
+            justify-content: center; /* Horizontally center content */
+        }
+        /* Set transition for hero image and text */
+        .fade-transition {
+            transition: opacity 1.5s ease-in-out;
+        }
+        /* Fade-in animation for hero section */
+        .hero-image.active {
+            opacity: 1;
+        }
+        .hero-image.inactive {
+            opacity: 0;
+        }
+        /* Hero text does not use active/inactive classes as it's static */
+        .hero-text {
+            opacity: 1; /* Always visible */
+            transform: translateY(0); /* Always in normal position */
+        }
+        /* Offset for target sections to avoid being hidden by fixed navigation */
+        .scroll-offset {
+            scroll-margin-top: 5rem; /* Adjust based on navigation height */
+        }
+        /* Style for news item cards */
+        .news-item-card {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+        .news-item-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+            object-fit: cover;
+        }
+        .news-item-card .news-content-preview {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* Limit to 3 lines */
+            -webkit-box-orient: vertical;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-secondary font-inter">
+
+    <!-- Navigation Bar (Fixed Top) -->
+    <nav class="fixed top-0 left-0 w-full bg-white shadow-lg py-4 z-50 rounded-b-lg">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <!-- Club Logo -->
+            <a href="#beranda" class="flex items-center space-x-2">
+                <img src="img/logo-ksk.png" alt="Logo KEI SHIN KAN" class="h-12 w-12 rounded-full shadow-md">
+                <!-- KEI SHIN KAN text enlarged and with drop shadow -->
+                <span class="text-2xl md:text-3xl font-extrabold text-primary drop-shadow-lg">KEI SHIN KAN</span>
+            </a>
+
+            <!-- Hamburger Button for Mobile -->
+            <button id="hamburger-button" class="md:hidden text-secondary focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+
+            <!-- Desktop Navigation Menu -->
+            <ul id="navbar-menu" class="hidden md:flex space-x-8 items-center">
+                <li><a href="#beranda" class="text-secondary hover:text-primary transition duration-300 font-semibold px-3 py-2 rounded-md">Beranda</a></li>
+                <li><a href="#tentang-kami" class="text-secondary hover:text-primary transition duration-300 font-semibold px-3 py-2 rounded-md">Tentang Kami</a></li>
+                <li><a href="#tempat-latihan" class="text-secondary hover:text-primary transition duration-300 font-semibold px-3 py-2 rounded-md">Tempat Latihan</a></li>
+                <li><a href="#berita-kegiatan" class="text-secondary hover:text-primary transition duration-300 font-semibold px-3 py-2 rounded-md">Berita & Kegiatan</a></li>
+                <li>
+                    <a href="login.html" class="bg-primary text-white px-5 py-2 rounded-full font-bold hover:bg-red-700 transition duration-300 shadow-md">Login</a>
+                </li>
+                <li>
+                    <a href="pendaftaran.html" class="bg-primary text-white px-5 py-2 rounded-full font-bold hover:bg-red-700 transition duration-300 shadow-md">Pendaftaran</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Mobile Navigation Menu (Appears when Hamburger is clicked) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white py-4 shadow-inner">
+            <ul class="flex flex-col items-center space-y-4">
+                <li><a href="#beranda" class="block text-secondary hover:text-primary transition duration-300 font-semibold px-3 py-2 rounded-md" onclick="toggleMobileMenu()">Beranda</a></li>
+                <li><a href="#tentang-kami" class="block text-secondary hover:text-primary transition duration-300 font-semibold px-3 py-2 rounded-md" onclick="toggleMobileMenu()">Tentang Kami</a></li>
+                <li><a href="#tempat-latihan" class="block text-secondary hover:text-primary transition duration-300 font-semibold px-3 py-2 rounded-md" onclick="toggleMobileMenu()">Tempat Latihan</a></li>
+                <li><a href="#berita-kegiatan" class="block text-secondary hover:text-primary transition duration-300 font-semibold px-3 py-2 rounded-md" onclick="toggleMobileMenu()">Berita & Kegiatan</a></li>
+                <li>
+                    <a href="login.html" class="bg-primary text-white px-5 py-2 rounded-full font-bold hover:bg-red-700 transition duration-300 shadow-md" onclick="toggleMobileMenu()">Login</a>
+                </li>
+                <li>
+                    <a href="pendaftaran.html" class="bg-primary text-white px-5 py-2 rounded-full font-bold hover:bg-red-700 transition duration-300 shadow-md" onclick="toggleMobileMenu()">Pendaftaran</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Home Section (Hero Section) -->
+    <section id="beranda" class="hero-section relative w-full overflow-hidden text-white flex items-center justify-center pt-20">
+        <!-- Auto-changing Background Images -->
+        <div id="hero-images" class="absolute inset-0">
+            <!-- Hero Images. Replace with your actual image URLs from the img folder. -->
+            <img src="img/1.jpg" alt="Hero Image 1" class="hero-image absolute inset-0 w-full h-full object-cover fade-transition active">
+            <img src="img/2.jpg" alt="Hero Image 2" class="hero-image absolute inset-0 w-full h-full object-cover fade-transition inactive">
+            <img src="img/3.jpg" alt="Hero Image 3" class="hero-image absolute inset-0 w-full h-full object-cover fade-transition inactive">
+            <!-- Dark Overlay for Text Contrast -->
+            <div class="absolute inset-0 bg-black opacity-50"></div>
+        </div>
+
+        <!-- Call to Action Text (Now Static) -->
+        <div class="relative z-10 text-center p-6 bg-black bg-opacity-40 rounded-lg max-w-3xl mx-auto shadow-2xl">
+            <h1 id="hero-text-content" class="text-4xl md:text-6xl font-extrabold mb-6 drop-shadow-lg hero-text">
+                Jadilah Bagian dari Keluarga <span class="text-accent drop-shadow-md">KEI SHIN KAN</span> Jawa Barat!
+            </h1>
+            <a href="pendaftaran.html" class="bg-accent text-gray-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-400 transition duration-300 shadow-lg transform hover:scale-105">
+                Gabung Sekarang!
+            </a>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="tentang-kami" class="container mx-auto py-16 px-4 bg-white rounded-lg shadow-md my-8 scroll-offset">
+        <h2 class="text-4xl font-bold text-center text-primary mb-8">Tentang Kami</h2>
+        <div class="max-w-4xl mx-auto text-lg leading-relaxed text-gray-700">
+            <p class="mb-4">
+                KEI SHIN KAN Jawa Barat adalah bagian integral dari organisasi bela diri Karate-Do yang berdedikasi untuk mengembangkan potensi diri, kedisiplinan, dan sportivitas di kalangan generasi muda dan masyarakat luas. Berdiri sejak tahun 19xx, kami telah mencetak banyak atlet berprestasi dan individu yang memiliki karakter kuat serta mental baja.
+            </p>
+            <p class="mb-4">
+                Filosofi KEI SHIN KAN menekankan pada keseimbangan antara kekuatan fisik dan ketenangan batin, melatih tidak hanya tubuh tetapi juga pikiran. Kami berkomitmen untuk menyediakan lingkungan latihan yang kondusif, didukung oleh para pelatih berpengalaman dan program latihan yang terstruktur.
+            </p>
+            <p>
+                Bergabunglah bersama kami untuk merasakan manfaat dari latihan Karate-Do, mulai dari peningkatan kebugaran fisik, kemampuan bela diri, hingga pembentukan karakter yang positif dan kepercayaan diri. KEI SHIN KAN Jawa Barat: Membentuk Jiwa Ksatria, Meraih Prestasi!
+            </p>
+        </div>
+    </section>
+
+    <!-- Training Locations Section -->
+    <section id="tempat-latihan" class="container mx-auto py-16 px-4 bg-white rounded-lg shadow-md my-8 scroll-offset">
+        <h2 class="text-4xl font-bold text-center text-primary mb-12">Tempat Latihan Kami</h2>
+
+        <!-- Filter Dropdown -->
+        <div class="mb-8 flex justify-center">
+            <select id="city-filter" class="p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary text-lg">
+                <option value="all">Semua Kota/Kabupaten</option>
+                <!-- Options will be populated by JavaScript -->
+            </select>
+        </div>
+
+        <div id="dojo-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Dojo cards will be dynamically inserted here by JavaScript -->
+            <p class="text-center text-gray-500 col-span-full">Memuat dojo...</p>
+        </div>
+    </section>
+
+    <!-- News and Activities Section (NEW!) -->
+    <section id="berita-kegiatan" class="container mx-auto py-16 px-4 bg-white rounded-lg shadow-md my-8 scroll-offset">
+        <h2 class="text-4xl font-bold text-center text-primary mb-12">Berita & Kegiatan Terbaru</h2>
+        <div id="news-activities-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- News and activities cards will be dynamically inserted here by JavaScript -->
+            <p class="text-center text-gray-500 col-span-full">Memuat berita dan kegiatan...</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 rounded-t-lg">
+        <div class="container mx-auto text-center px-4">
+            <p class="mb-2">&copy; 2025 KEI SHIN KAN Jawa Barat. Hak Cipta Dilindungi.</p>
+            <p class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i>Sekretariat: Jl. Contoh Alamat No. 123, Bandung, Jawa Barat</p>
+            <p><i class="fas fa-phone-alt mr-2"></i>Telepon: (022) 1234-5678</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for interactivity -->
+    <script type="module">
+        // Import Firebase functions
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+        // Firebase Configuration (ensure this matches your project config)
+        // Gunakan __firebase_config jika tersedia (dari lingkungan Canvas), jika tidak gunakan hardcoded config.
+        const firebaseConfigRaw = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+             apiKey: "AIzaSyCAjAjkoQhx1eB7IxhpA5Yi8Z7wZC7nhzM",
+             authDomain: "kskjabar-f01f1.firebaseapp.com",
+             projectId: "kskjabar-f01f1",
+             storageBucket: "kskjabar-f01f1.firebasestorage.app",
+             messagingSenderId: "383836530077",
+             appId: "1:383836530077:web:6ab44455755626d5fa3b74",
+             measurementId: "G-N251SVP9VN"
+        };
+
+        let app;
+        let db;
+        let allDojos = []; // To store all dojos fetched from Firestore
+
+        // Get the application ID from the global variable (provided by Canvas)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : firebaseConfigRaw.projectId;
+        // Updated collection paths to match Firestore rules
+        const dojosCollectionPath = `artifacts/${appId}/public/data/dojos`; 
+        const newsActivitiesCollectionPath = `artifacts/${appId}/public/data/news_activities`; // New collection for news
+
+        // Initialize Firebase
+        function initializeFirebase() {
+            try {
+                app = initializeApp(firebaseConfigRaw); // Initialize with the dynamic/hardcoded config
+                db = getFirestore(app);
+                console.log("Firebase initialized for index.html");
+                console.log("Using Firebase Project ID (appId for collections):", appId);
+                console.log("Dojos Collection Path:", dojosCollectionPath);
+                console.log("News Activities Collection Path:", newsActivitiesCollectionPath);
+            } catch (error) {
+                console.error("Error initializing Firebase in index.html:", error.message);
+                document.getElementById('dojo-list').innerHTML = '<p class="text-center text-red-500 col-span-full">Gagal memuat dojo: Gagal menginisialisasi Firebase. Periksa konsol.</p>';
+                document.getElementById('news-activities-list').innerHTML = '<p class="text-center text-red-500 col-span-full">Gagal memuat berita: Gagal menginisialisasi Firebase. Periksa konsol.</p>';
+            }
+        }
+
+        // Hero Section Slider Data
+        const heroImages = document.querySelectorAll('.hero-image');
+        let currentImageIndex = 0;
+
+        // Function to change hero image
+        function changeHeroContent() {
+            // Fade out current image
+            heroImages[currentImageIndex].classList.remove('active');
+            heroImages[currentImageIndex].classList.add('inactive');
+
+            // Update image index
+            currentImageIndex = (currentImageIndex + 1) % heroImages.length;
+
+            // Fade in new image after a short delay for transition
+            setTimeout(() => {
+                heroImages[currentImageIndex].classList.remove('inactive');
+                heroImages[currentImageIndex].classList.add('active');
+            }, 1000); // 1-second delay for fade-out transition to be visible
+        }
+
+        // Start changing images every 5 seconds
+        setInterval(changeHeroContent, 5000);
+
+        // JavaScript for Hamburger Menu
+        const hamburgerButton = document.getElementById('hamburger-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        hamburgerButton.addEventListener('click', toggleMobileMenu);
+
+        // Close mobile menu when clicking a link inside it (for smooth scroll)
+        const mobileMenuItems = mobileMenu.querySelectorAll('a');
+        mobileMenuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Provide a small delay for smooth scroll to work before closing the menu
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                }, 300);
+            });
+        });
+
+        // Close mobile menu if screen size changes from mobile to desktop
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) { // Tailwind md breakpoint
+                mobileMenu.classList.add('hidden');
+            }
+        });
+
+        // --- Dojo Display and Filter Functions (using Firestore) ---
+        const dojoListContainer = document.getElementById('dojo-list');
+        const cityFilterDropdown = document.getElementById('city-filter');
+        
+
+        // Function to render dojo cards
+        function renderDojos(filteredDojos = allDojos) {
+            dojoListContainer.innerHTML = ''; // Clear current dojo list
+            if (filteredDojos.length === 0) {
+                dojoListContainer.innerHTML = '<p class="text-center text-lg text-gray-600 col-span-full">Tidak ada dojo ditemukan di kota ini.</p>';
+                return;
+            }
+
+            filteredDojos.forEach(dojo => {
+                const dojoCard = `
+                    <div class="bg-gray-50 p-6 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
+                        <img src="${dojo.image}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/CCCCCC/000000?text=No+Image';" alt="Logo Dojo ${dojo.name}" class="h-24 w-24 mx-auto mb-6 rounded-full object-cover shadow-md">
+                        <h3 class="text-2xl font-bold text-center text-primary mb-4">${dojo.name}</h3>
+                        <ul class="text-lg text-gray-700 space-y-2">
+                            <li><i class="fas fa-user-tie text-primary mr-2"></i><strong>Pelatih:</strong> ${dojo.trainer}</li>
+                            <li><i class="fas fa-phone-alt text-primary mr-2"></i><strong>Kontak:</strong> ${dojo.contact}</li>
+                            <li><i class="fas fa-map-marker-alt text-primary mr-2"></i><strong>Alamat:</strong> ${dojo.address}</li>
+                            <li><i class="fas fa-calendar-alt text-primary mr-2"></i><strong>Jadwal:</strong> ${dojo.schedule}</li>
+                        </ul>
+                    </div>
+                `;
+                dojoListContainer.innerHTML += dojoCard;
+            });
+        }
+
+        // Function to populate the city filter dropdown based on fetched dojos
+        function populateCityFilter() {
+            // Clear existing options, except "Semua Kota/Kabupaten"
+            cityFilterDropdown.innerHTML = '<option value="all">Semua Kota/Kabupaten</option>';
+            
+            const uniqueCities = [...new Set(allDojos.map(dojo => dojo.city))].sort(); // Get unique cities and sort them
+            
+            uniqueCities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                cityFilterDropdown.appendChild(option);
+            });
+        }
+
+        // Function to filter dojos based on selected city
+        function filterDojosByCity() {
+            const selectedCity = cityFilterDropdown.value;
+            let filteredDojos = [];
+
+            if (selectedCity === 'all') {
+                filteredDojos = allDojos; // Show all dojos
+            } else {
+                filteredDojos = allDojos.filter(dojo => dojo.city === selectedCity);
+            }
+            renderDojos(filteredDojos);
+        }
+
+        // Function to fetch dojos from Firestore
+        async function fetchDojosFromFirestore() {
+            if (!db) {
+                console.error("Firestore is not initialized for Dojos.");
+                dojoListContainer.innerHTML = '<p class="text-center text-red-500 col-span-full">Gagal memuat dojo: Koneksi database tidak tersedia.</p>';
+                return;
+            }
+
+            try {
+                const querySnapshot = await getDocs(collection(db, dojosCollectionPath));
+                allDojos = []; // Clear previous data
+                querySnapshot.forEach((docItem) => {
+                    allDojos.push(docItem.data());
+                });
+                console.log("Dojos fetched from Firestore:", allDojos);
+                
+                populateCityFilter(); // Repopulate filter with new data
+                renderDojos(); // Display all dojos initially
+            } catch (error) {
+                console.error("Error fetching dojos from Firestore:", error);
+                dojoListContainer.innerHTML = `<p class="text-center text-red-500 col-span-full">Gagal memuat dojo: ${error.message}</p>`;
+            }
+        }
+
+        // Event listener for filter dropdown
+        cityFilterDropdown.addEventListener('change', filterDojosByCity);
+
+
+        // --- News and Activities Display Functions (NEW!) ---
+        const newsActivitiesListContainer = document.getElementById('news-activities-list');
+
+        // Function to render news/activities cards
+        function renderNewsActivities(newsItems) {
+            newsActivitiesListContainer.innerHTML = ''; // Clear current news list
+            if (newsItems.length === 0) {
+                newsActivitiesListContainer.innerHTML = '<p class="text-center text-lg text-gray-600 col-span-full">Belum ada berita atau kegiatan terbaru.</p>';
+                return;
+            }
+
+            newsItems.forEach(news => {
+                const newsCard = `
+                    <div class="news-item-card">
+                        ${news.imageUrl ? `<img src="${news.imageUrl}" onerror="this.onerror=null;this.src='https://placehold.co/300x200/CCCCCC/000000?text=No+Image';" alt="Gambar Berita" class="mb-4">` : ''}
+                        <h3 class="text-xl font-bold text-primary mb-2">${news.title || 'Tanpa Judul'}</h3>
+                        <p class="text-gray-600 text-sm mb-2">Tanggal: ${news.date || 'N/A'}</p>
+                        <p class="text-gray-700 text-base news-content-preview">${news.content || 'Tidak ada konten.'}</p>
+                    </div>
+                `;
+                newsActivitiesListContainer.innerHTML += newsCard;
+            });
+        }
+
+        // Function to fetch news/activities from Firestore
+        async function fetchNewsActivitiesFromFirestore() {
+            if (!db) {
+                console.error("Firestore is not initialized for News/Activities.");
+                newsActivitiesListContainer.innerHTML = '<p class="text-center text-red-500 col-span-full">Gagal memuat berita: Koneksi database tidak tersedia.</p>';
+                return;
+            }
+
+            try {
+                // Fetch news and order by timestamp (latest first)
+                const q = query(collection(db, newsActivitiesCollectionPath), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+                const newsItems = [];
+                querySnapshot.forEach((docItem) => {
+                    newsItems.push(docItem.data());
+                });
+                console.log("News & Activities fetched from Firestore:", newsItems);
+                renderNewsActivities(newsItems);
+            } catch (error) {
+                console.error("Error fetching news/activities from Firestore:", error);
+                newsActivitiesListContainer.innerHTML = `<p class="text-center text-red-500 col-span-full">Gagal memuat berita/kegiatan: ${error.message}</p>`;
+            }
+        }
+
+
+        // Initial setup on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeFirebase(); // Initialize Firebase when DOM is ready
+            fetchDojosFromFirestore(); // Fetch dojos from Firestore
+            fetchNewsActivitiesFromFirestore(); // Fetch news and activities from Firestore
+        });
+    </script>
+</body>
+</html>

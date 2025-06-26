@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail ID Card Anggota KEI SHIN KAN</title>
+    <!-- Link ke Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Konfigurasi Tailwind untuk menambahkan warna dan font kustom -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'], // Font Inter
+                    },
+                    colors: {
+                        primary: '#B40000', // Warna merah khas klub
+                        secondary: '#333333', // Warna gelap untuk teks
+                        accent: '#F9A826', // Warna aksen
+                        darkred: '#8B0000', // Warna merah lebih gelap untuk aksen
+                        lightgray: '#F0F0F0', // Warna abu-abu terang untuk latar belakang
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Link ke Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- qrious.js CDN for QR Code generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <!-- html2canvas CDN for converting HTML to canvas/image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Favicon -->
+    <link rel="icon" href="img/logo-ksk.png" type="image/png">
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            font-family: 'Inter', sans-serif;
+        }
+        main {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .id-card-container {
+            /* Background putih dan border tipis seperti gambar */
+            background-color: white;
+            border-radius: 0.5rem; /* Sedikit lebih bulat dari sebelumnya */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Bayangan lebih halus */
+            padding: 0; /* Hapus padding agar header dan footer bisa penuh */
+            color: #333333; /* Warna teks gelap */
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid #e0e0e0; /* Border abu-abu tipis */
+            position: relative;
+            overflow: hidden;
+            transform: scale(1); /* Hapus transformasi default */
+            transition: none; /* Hapus transisi hover */
+        }
+        .id-card-container:hover {
+            transform: scale(1); /* Pastikan tidak ada efek zoom saat hover */
+        }
+        .id-card-container::before {
+            display: none; /* Hapus overlay logo KSK di background */
+        }
+        .id-card-content {
+            position: relative;
+            z-index: 1;
+            padding: 1.5rem 1rem; /* Tambahkan padding agar tidak terlalu mepet tepi */
+        }
+        .id-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #B40000; /* Warna merah sesuai gambar */
+            padding: 0.75rem 1rem; /* Padding lebih tinggi */
+            border-radius: 0.5rem 0.5rem 0 0; /* Sudut atas bulat */
+        }
+        .id-card-header img {
+            height: 40px; /* Ukuran logo di header */
+            width: 40px;
+            object-fit: contain;
+            margin-right: 0.5rem;
+            /* REMOVED: border-radius: 50%; to keep it rectangular as per the image */
+        }
+        .id-card-header span {
+            color: white;
+            font-weight: bold;
+            font-size: 1.25rem; /* Ukuran teks di header */
+        }
+        .profile-pic-placeholder {
+            width: 120px; /* Ukuran placeholder lingkaran */
+            height: 120px;
+            border: 2px solid #F9A826; /* Border kuning aksen / oranye */
+            border-radius: 50%;
+            margin: 1.5rem auto 1rem auto; /* Atur margin untuk posisi */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0; /* Warna abu-abu terang */
+            color: #ccc; /* Warna ikon placeholder */
+            font-size: 3rem; /* Ukuran ikon placeholder */
+            overflow: hidden; /* Pastikan gambar tidak keluar dari lingkaran */
+        }
+        .profile-pic {
+            width: 100%; /* Isi penuh placeholder */
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%; /* Pastikan tetap lingkaran */
+        }
+        .qr-code-canvas {
+            background-color: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sedikit bayangan pada QR */
+        }
+        .info-section {
+            width: 100%; /* Pastikan bagian info mengisi lebar yang tersedia */
+            padding: 0 1rem; /* Padding horizontal untuk bagian info */
+        }
+        .info-row {
+            display: flex;
+            align-items: baseline; /* Align text baselines */
+            margin-bottom: 0.25rem; /* Jarak antar baris */
+        }
+        .info-label {
+            font-weight: 500; /* Sedikit lebih tebal dari value */
+            color: #555555; /* Warna abu-abu gelap */
+            flex-basis: 70px; /* Lebar tetap untuk label, disesuaikan agar rapih */
+            text-align: left;
+            padding-right: 0.5rem; /* Jarak sebelum titik dua */
+        }
+        .info-separator {
+            flex-shrink: 0; /* Jangan menyusut */
+            margin-right: 0.25rem; /* Jarak setelah titik dua */
+            color: #555555;
+        }
+        .info-value {
+            font-weight: 400;
+            color: #333333; /* Warna teks utama */
+            flex-grow: 1; /* Biarkan mengisi ruang kosong */
+            text-align: left; /* Rata kiri untuk nilai */
+            word-break: break-word; /* Pecah kata panjang */
+        }
+        .scan-text {
+            font-size: 0.9rem;
+            color: #777777;
+            margin-top: 0.5rem;
+        }
+        /* New CSS for ID card footer */
+        .id-card-footer {
+            background-color: #1a202c; /* Tailwind gray-900 equivalent */
+            color: white;
+            padding: 0.75rem 1rem; /* Adjust padding for visual appeal within the card */
+            font-size: 0.7rem; /* Smaller font size for footer text */
+            border-radius: 0 0 0.5rem 0.5rem; /* Rounded bottom corners */
+            margin-top: 1.5rem; /* Space between QR code/scan text and footer */
+            line-height: 1.3; /* Adjust line height for denser text */
+        }
+        .id-card-footer p {
+            margin-bottom: 0.1rem; /* Reduce margin between footer paragraphs */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-secondary">
+
+    <!-- Navigasi Bar (Simplified for internal pages) -->
+    <nav class="w-full bg-white shadow-lg py-4 z-50 rounded-b-lg">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <!-- Logo Klub -->
+            <a href="index.html" class="flex items-center space-x-2">
+                <img src="img/logo-ksk.png" alt="Logo KEI SHIN KAN" class="h-12 w-12 rounded-full shadow-md">
+                <span class="text-xl font-bold text-primary">KEI SHIN KAN</span>
+            </a>
+            <!-- Link Kembali ke Dashboard -->
+            <a href="dashboard.html" class="text-secondary hover:text-primary transition duration-300 font-semibold px-3 py-2 rounded-md">
+                <i class="fas fa-arrow-left mr-1"></i> Kembali ke Dashboard
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div id="member-detail-container" class="flex flex-col items-center">
+            <h1 class="text-3xl font-bold text-primary mb-6">Detail ID Card Anggota</h1>
+            <div id="id-card-display" class="id-card-container">
+                <div class="id-card-header">
+                    <img src="img/logo-ksk.png" alt="Logo KSK">
+                    <span>KEI SHIN KAN</span>
+                </div>
+                <div class="id-card-content">
+                    <div class="profile-pic-placeholder">
+                        <img id="member-photo" src="https://placehold.co/120x120/CCCCCC/000000?text=Foto" alt="Foto Anggota" class="profile-pic">
+                    </div>
+                    
+                    <h2 id="member-name" class="text-2xl font-extrabold mb-4 text-primary uppercase">NAMA ANGGOTA</h2>
+                    
+                    <div class="text-base info-section">
+                        <div class="info-row">
+                            <span class="info-label">TTL</span> <span class="info-separator">:</span> <span id="member-dob" class="info-value">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Sabuk</span> <span class="info-separator">:</span> <span id="member-belt" class="info-value">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Dojo</span> <span class="info-separator">:</span> <span id="member-dojo" class="info-value">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Cabang</span> <span class="info-separator">:</span> <span id="member-city" class="info-value">Loading...</span>
+                        </div>
+                    </div>
+
+                    <canvas id="qrcode-canvas" class="qr-code-canvas"></canvas>
+                    <p class="scan-text">Scan untuk Kehadiran</p>
+                </div>
+                <!-- Footer for ID Card -->
+                <div class="id-card-footer">
+                    <p>&copy; 2025 KEI SHIN KAN Jawa Barat</p>
+                    <p>Hak Cipta Dilindungi.</p>
+                </div>
+            </div>
+            <div id="loading-message" class="mt-8 text-lg text-gray-700">Memuat detail anggota...</div>
+            <div id="error-message" class="mt-8 text-lg text-red-500 hidden"></div>
+            
+            <div class="mt-8 flex space-x-4">
+                <button id="print-card-btn" class="bg-blue-600 text-white px-6 py-3 rounded-full font-bold hover:bg-blue-700 transition duration-300 shadow-md">
+                    <i class="fas fa-print mr-2"></i>Cetak Kartu
+                </button>
+                <button id="download-card-btn" class="bg-green-600 text-white px-6 py-3 rounded-full font-bold hover:bg-green-700 transition duration-300 shadow-md">
+                    <i class="fas fa-download mr-2"></i>Unduh Kartu
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Main website footer -->
+    <footer class="bg-gray-900 text-white py-8 rounded-t-lg mt-auto">
+        <div class="container mx-auto text-center px-4">
+            <p class="mb-2">&copy; 2025 KEI SHIN KAN Jawa Barat. Hak Cipta Dilindungi.</p>
+            <p class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i>Sekretariat: Jl. Contoh Alamat No. 123, Bandung, Jawa Barat</p>
+            <p><i class="fas fa-phone-alt mr-2"></i>Telepon: (022) 1234-5678</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+        import { getFirestore, doc, getDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+
+        // Konfigurasi Firebase Anda.
+        // Gunakan __firebase_config jika tersedia (dari lingkungan Canvas), jika tidak gunakan hardcoded config.
+        const firebaseConfigRaw = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+             apiKey: "AIzaSyCAjAjkoQhx1eB7IxhpA5Yi8Z7wZC7nhzM",
+             authDomain: "kskjabar-f01f1.firebaseapp.com",
+             projectId: "kskjabar-f01f1",
+             storageBucket: "kskjabar-f01f1.firebasestorage.app",
+             messagingSenderId: "383836530077",
+             appId: "1:383836530077:web:6ab44455755626d5fa3b74",
+             measurementId: "G-N251SVP9VN"
+        };
+        
+        let app;
+        let db;
+        let auth;
+        let firebaseInitialized = false;
+
+        async function initializeFirebaseAndAuth() {
+            if (firebaseConfigRaw && firebaseConfigRaw.apiKey) {
+                try {
+                    app = initializeApp(firebaseConfigRaw);
+                    auth = getAuth(app);
+                    db = getFirestore(app);
+                    firebaseInitialized = true;
+                    console.log("Firebase initialized for member_detail.html.");
+
+                    // Sign in anonymously if no user is authenticated to allow data fetching
+                    onAuthStateChanged(auth, async (user) => {
+                        if (user) {
+                            console.log("User signed in:", user.uid);
+                            loadMemberDetails();
+                        } else {
+                            try {
+                                await signInAnonymously(auth);
+                                console.log("Signed in anonymously for data access.");
+                                loadMemberDetails();
+                            } catch (error) {
+                                console.error("Anonymous sign-in failed:", error.message);
+                                displayError("Gagal mengautentikasi untuk memuat data. Pastikan Anonymous Sign-in diaktifkan.");
+                            }
+                        }
+                    });
+
+                } catch (error) {
+                    console.error("Firebase initialization error for member_detail.html:", error.message);
+                    displayError(`Gagal menginisialisasi Firebase: ${error.message}`);
+                }
+            } else {
+                console.error("Konfigurasi Firebase tidak tersedia. Tidak dapat menginisialisasi Firebase.");
+                displayError("Konfigurasi Firebase tidak ditemukan. Mohon perbarui kode.");
+            }
+        }
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : firebaseConfigRaw.projectId;
+        const membersCollectionPath = `artifacts/${appId}/public/data/members`;
+
+        function getMemberIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        async function loadMemberDetails() {
+            const memberId = getMemberIdFromUrl();
+            const loadingMessage = document.getElementById('loading-message');
+            const errorMessage = document.getElementById('error-message');
+            const idCardDisplay = document.getElementById('id-card-display');
+            const printBtn = document.getElementById('print-card-btn');
+            const downloadBtn = document.getElementById('download-card-btn');
+
+            loadingMessage.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+            idCardDisplay.classList.add('hidden'); // Hide card until data is loaded
+            printBtn.classList.add('hidden');
+            downloadBtn.classList.add('hidden');
+
+            if (!memberId) {
+                displayError("ID Anggota tidak ditemukan di URL.");
+                return;
+            }
+
+            if (!firebaseInitialized || !db) {
+                displayError("Firebase belum diinisialisasi atau koneksi database tidak tersedia.");
+                return;
+            }
+
+            try {
+                const memberDocRef = doc(db, membersCollectionPath, memberId);
+                const memberDocSnap = await getDoc(memberDocRef);
+
+                if (memberDocSnap.exists()) {
+                    const memberData = memberDocSnap.data();
+                    console.log("Member data fetched:", memberData);
+
+                    // Update the image src. The placeholder now has a fixed size.
+                    const memberPhotoElement = document.getElementById('member-photo');
+                    memberPhotoElement.src = memberData.photoUrl || 'https://placehold.co/120x120/CCCCCC/000000?text=Foto';
+
+                    document.getElementById('member-name').textContent = (memberData.name || 'N/A').toUpperCase(); // Uppercase name
+                    // ID Anggota tidak ditampilkan langsung di kartu seperti contoh, tapi bisa ditambahkan jika perlu
+                    // document.getElementById('member-id').textContent = memberId; 
+                    document.getElementById('member-dob').textContent = `${memberData.placeOfBirth || 'N/A'}, ${memberData.dateOfBirth || 'N/A'}`;
+                    document.getElementById('member-belt').textContent = memberData.beltLevel || 'N/A';
+                    document.getElementById('member-dojo').textContent = memberData.dojoName || 'N/A';
+                    document.getElementById('member-city').textContent = memberData.city || 'N/A';
+
+                    // Generate QR Code
+                    const qrCodeCanvas = document.getElementById('qrcode-canvas');
+                    if (qrCodeCanvas) {
+                        new QRious({
+                            element: qrCodeCanvas,
+                            value: memberId, // Data yang akan dienkripsi dalam QR code
+                            size: 100, // Ukuran QR code
+                            padding: 10
+                        });
+                    }
+
+                    loadingMessage.classList.add('hidden');
+                    idCardDisplay.classList.remove('hidden'); // Show card
+                    printBtn.classList.remove('hidden');
+                    downloadBtn.classList.remove('hidden');
+
+                } else {
+                    displayError(`Anggota dengan ID "${memberId}" tidak ditemukan.`);
+                }
+            } catch (error) {
+                console.error("Error fetching member details:", error);
+                displayError(`Gagal memuat detail anggota: ${error.message}`);
+            }
+        }
+
+        function displayError(message) {
+            document.getElementById('loading-message').classList.add('hidden');
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+            document.getElementById('id-card-display').classList.add('hidden'); // Ensure card is hidden on error
+            document.getElementById('print-card-btn').classList.add('hidden');
+            document.getElementById('download-card-btn').classList.add('hidden');
+        }
+
+        // Fungsi untuk mencetak ID Card
+        function printIdCard() {
+            const printContent = document.getElementById('id-card-display');
+            // Membuat jendela baru untuk cetak
+            let printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Cetak ID Card</title>');
+            // Sertakan CSS dari halaman asli
+            printWindow.document.write('<style>');
+            // Ambil semua gaya internal
+            const styles = document.querySelectorAll('style');
+            styles.forEach(style => {
+                printWindow.document.write(style.innerHTML);
+            });
+            // Tambahkan gaya khusus untuk cetak
+            printWindow.document.write(`
+                body { margin: 0; padding: 20px; font-family: 'Inter', sans-serif; background-color: #f0f0f0; }
+                .id-card-container {
+                    transform: scale(1) !important;
+                    box-shadow: none !important;
+                    border: 1px solid #e0e0e0 !important; /* Pertahankan border tipis */
+                    margin: auto;
+                    color: #333333; /* Pastikan teks gelap */
+                }
+                .id-card-container::before { display: none !important; }
+                .id-card-header { border-radius: 0.5rem 0.5rem 0 0 !important; } /* Pastikan header tetap bulat atasnya */
+                .profile-pic-placeholder { border: 2px solid #F9A826 !important; }
+                .info-label { color: #555555 !important; }
+                .info-value { color: #333333 !important; }
+                .scan-text { color: #777777 !important; }
+                .id-card-footer {
+                    background-color: #1a202c !important; /* Tailwind gray-900 equivalent */
+                    color: white !important;
+                    font-size: 0.7rem !important;
+                    border-radius: 0 0 0.5rem 0.5rem !important;
+                    margin-top: 1.5rem !important;
+                    line-height: 1.3 !important;
+                    padding: 0.75rem 1rem !important;
+                }
+                .id-card-footer p { margin-bottom: 0.1rem !important; }
+            `);
+            printWindow.document.write('</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write('<div style="text-align: center; margin-bottom: 20px;"><h1 style="color: #B40000; font-weight: bold;">ID Card Anggota KEI SHIN KAN</h1></div>');
+            printWindow.document.write(printContent.outerHTML); // Hanya konten ID card
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close(); // Tutup jendela cetak setelah selesai
+        }
+
+        // Fungsi untuk mengunduh ID Card sebagai gambar (PNG)
+        async function downloadIdCard() {
+            const cardElement = document.getElementById('id-card-display');
+            // Sembunyikan tombol cetak/unduh sementara agar tidak ikut tercetak di gambar
+            const printBtn = document.getElementById('print-card-btn');
+            const downloadBtn = document.getElementById('download-card-btn');
+            printBtn.classList.add('hidden');
+            downloadBtn.classList.add('hidden');
+
+            try {
+                const canvas = await html2canvas(cardElement, {
+                    scale: 2, // Meningkatkan resolusi gambar
+                    useCORS: true, // Penting jika ada gambar lintas domain
+                    backgroundColor: '#ffffff' // Atur background menjadi putih solid untuk html2canvas
+                });
+
+                const dataUrl = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = `ID_Card_${document.getElementById('member-name').textContent.replace(/\s/g, '_') || 'Anggota'}.png`;
+                link.href = dataUrl;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                console.error("Error generating image for download:", error);
+                alert("Gagal mengunduh kartu. Pastikan semua gambar dimuat dengan benar atau coba lagi.");
+            } finally {
+                // Tampilkan kembali tombol
+                printBtn.classList.remove('hidden');
+                downloadBtn.classList.remove('hidden');
+            }
+        }
+
+
+        // Inisialisasi Firebase dan muat detail anggota saat DOM selesai dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeFirebaseAndAuth();
+            document.getElementById('print-card-btn').addEventListener('click', printIdCard);
+            document.getElementById('download-card-btn').addEventListener('click', downloadIdCard);
+        });
+    </script>
+</body>
+</html>
